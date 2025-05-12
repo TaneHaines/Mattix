@@ -86,6 +86,7 @@ char* board_string(int *list, int len) {
 
 int* get_valid(int *list, int len, int dir, int player_pos) {
     int *available = malloc(6*sizeof(int)); 
+    printf("%p\n", available);
     int position;
     int av_pos = 0;
     if (dir == 2) {
@@ -122,6 +123,7 @@ void game() {
     int p1_score;
     int p2_score;
     int selected;
+    int *available;
     p1_score = p2_score = 0;
 
     int *pegs = malloc(len*sizeof(int));
@@ -154,7 +156,7 @@ void game() {
         free(board);
         
         player_pos = linear_search(pegs, len, 0);
-        int *available = get_valid(pegs, len, dir, player_pos);
+        available = get_valid(pegs, len, dir, player_pos);
 
         int empty_count = 0;
         while (!in_selected(available, 6, selected)) {
@@ -171,6 +173,11 @@ void game() {
 
             while (getchar() != '\n');
         } --selected;
+        
+        for (int i = 0; i < 6; ++i) {
+            *(available+i) = -99;
+        }
+
         if (empty_count == 6) break;
         printf("%d", empty_count);
 
@@ -189,8 +196,8 @@ void game() {
         pegs[selected] = 0;
         player_pos = selected;   
         
-        free(available);
     }
+    free(available);
     system("clear");
     printf("Player 1 Scored %d Points\nPlayer 2 Scored %d Points\nWinner is Player %d\n", p1_score, p2_score, (p1_score < p2_score)+1);
     stats.game_status = 1;
